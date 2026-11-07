@@ -13,7 +13,7 @@ def gaussian_noise(img, sigma, rng, mean=0.0):
 def salt_and_pepper(img, amt, salt_ratio, rng):
     out = img.copy()
     u = rng.random(img.shape)
-
+    
     salt_mask = u <amt*salt_ratio
     pepper_mask = (u>= amt*salt_ratio) & (u<amt)
     out[salt_mask] = 255
