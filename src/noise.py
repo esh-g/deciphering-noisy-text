@@ -6,7 +6,7 @@ def gaussian_noise(img, sigma, rng, mean=0.0):
     img_f = img.astype(np.float32)
     noise = rng.normal(loc = mean, scale = sigma, size=img.shape).astype(np.float32)
     noisy = img_f+noise 
-    return np.clip(noisy, 0, 255).astype(np.unit8)
+    return np.clip(noisy, 0, 255).astype(np.uint8)
 
 
 
@@ -24,4 +24,4 @@ def speckle_noise(img, sigma, rng, mean=0.0):
     img_f = img.astype(np.float32)
     noise  = rng.normal(loc=mean, scale=sigma, size=img.shape).astype(np.float32)
     noisy = img_f + img_f*noise 
-    return np.clip(noisy, 0, 255).astype(np.unit8)
+    return np.clip(noisy, 0, 255).astype(np.uint8)
