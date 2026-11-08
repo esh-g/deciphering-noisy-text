@@ -47,3 +47,19 @@ def jpeg_compression(img, rng, quality_range=(30, 95)):
     output=cv2.imdecode(lowered_quality, cv2.IMREAD_UNCHANGED)
     return output
 
+def elastic_warp(img,rng,sigma_range=(3,6),alpha_range=(20,80)):
+    height, width = img.shape[:2]
+    dx=rng.uniform(-1, 1, (height, width)).astype(np.float32)
+    dy=rng.uniform(-1, 1, (height, width)).astype(np.float32)
+    sigma=rng.uniform(*sigma_range)
+    alpha=rng.uniform(*alpha_range)
+    dx=cv2.GaussianBlur(dx, (0, 0), sigmaX=sigma)
+    dy=cv2.GaussianBlur(dy, (0, 0), sigmaX=sigma)
+    dx*=alpha
+    dy*=alpha
+    x, y=np.meshgrid(np.arange(width), np.arange(height))
+    map_x=(x+dx).astype(np.float32)
+    map_y=(y+dy).astype(np.float32)
+    output=cv2.remap(img, map_x, map_y,interpolation=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REPLICATE)
+    return output
+
