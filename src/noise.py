@@ -40,3 +40,10 @@ def rotate_skew(img, rng, theta_range=(-15, 15), scale_range=(0.9, 1.1),shear_x_
     centred_shear=translate_back@shear_matrix@translate_to_origin
     transformation_matrix=rotation_matrix@centred_shear
     return cv2.warpAffine(img,transformation_matrix[:2, :],(width, height),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REPLICATE)
+
+def jpeg_compression(img, rng, quality_range=(30, 95)):
+    quality=rng.integers(quality_range[0], quality_range[1]+1)
+    _,lowered_quality=cv2.imencode(".jpg",img, [cv2.IMWRITE_JPEG_QUALITY, int(quality)])
+    output=cv2.imdecode(lowered_quality, cv2.IMREAD_UNCHANGED)
+    return output
+
