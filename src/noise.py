@@ -193,3 +193,38 @@ def background_texture(shape, rng, base=200, strength=25):
     if len(shape) == 3:
         tex = np.repeat(tex[:, :, None], shape[2], axis=2)
     return tex
+
+
+def brightness_contrast(img, rng, alpha_range=(0.6, 1.4), beta_range=(-40, 40)):
+
+    alpha = rng.uniform(*alpha_range)
+    beta = rng.uniform(*beta_range)
+
+    img_f = img.astype(np.float32)
+    mean = img_f.mean()
+    out = alpha * (img_f - mean) + mean + beta
+    return np.clip(out, 0, 255).astype(np.uint8)
+
+
+def motion_blur(img, rng, length_range=(3, 11), angle_range=(-20, 20)):
+
+    length = int(rng.integers(length_range[0], length_range[1] + 1))
+    angle = rng.uniform(*angle_range)
+
+    k = length if length % 2 == 1 else length + 1      
+    if k < 3:
+        return img.copy()                              
+
+    kernel = np.zeros((k, k), dtype=np.float32)
+    kernel[k // 2, :] = 1.0                            
+
+    center = (k - 1) / 2.0                             
+    rot = cv2.getRotationMatrix2D((center, center), angle, 1.0)
+    kernel = cv2.warpAffine(kernel, rot, (k, k), flags=cv2.INTER_LINEAR)
+
+    s = kernel.sum()
+    if s == 0:
+        return img.copy()
+    kernel /= s
+
+    return cv2.filter2D(img, -1, kernel, borderType=cv2.BORDER_REPLICATE)
